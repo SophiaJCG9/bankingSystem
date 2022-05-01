@@ -1,3 +1,4 @@
+#code to connect mysql to python is not working. BUG!
 import mysql.connector
 
 mydb = mysql.connector.connect(
