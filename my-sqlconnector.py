@@ -1,3 +1,4 @@
+"""
 #code to connect mySQL and Python
 import mysql.connector
 
@@ -15,6 +16,7 @@ users = mycursor.fetchall()
 #this allows me to see my database
 for user in users:
     print(user)
+"""
 
 
 
