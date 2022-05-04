@@ -36,7 +36,7 @@ pinList = [pin[0] for pin in databasePin]
 print("=======Hello User! Welcome to the Banking System UI.=======")
 userType = input("Please Enter Whether You Are an Admin or Customer: ")
 
-#check userName and Pin
+#check if userName and Pin are correct.
 if userType == "Admin":
     print("\n=======Hello Admin. Please enter your Username and Pin.=======")
     adminUserName = input("UserName: ")
