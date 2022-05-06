@@ -28,6 +28,12 @@ userRole = myCursor.fetchall()
 #This makes the userRole list accesible
 userRoleList = [user[0] for user in userRole]
 
+#fetch the balance for the customers
+myCursor.execute("SELECT balance FROM bs_database")
+customerBalance = myCursor.fetchall()
+#This makes my balanceList accesible
+balanceList = [user[0] for user in customerBalance]
+print("This is my balance list: ", balanceList)
 
 #access pins in database
 myCursor.execute("SELECT userPin FROM bs_database")
@@ -35,77 +41,114 @@ databasePin = myCursor.fetchall()
 #This makes my pins accessible.
 pinList = [pin[0] for pin in databasePin]
 
+
+
 #This is my Welcome Page.
 print("=======Hello User! Welcome to the Banking System UI.=======")
 userType = input("Please Enter Whether You Are an Admin or Customer: ")
 
 #check if userName and Pin are correct. Check if userName is actually a customer.
-if userType == "Admin":
-    print("\n=======Hello Admin. Please enter your Username and Pin.=======")
-    #stores the inputted user name
-    adminUserName = input("UserName: ")
-    #checks if the input is in the database
-    if adminUserName in userNameList:
-        #stores the correct username
-        correctUN = adminUserName
-        #stores the user name index for later comparison with pin and admin index.
-        UNindex = userNameList.index(correctUN)
-        #stores if the user at the specified index is a customer or admin
-        userRole_at_index = (userRoleList[UNindex])
-        #checks if the user is an Admin
-        if userRole_at_index == "Admin":
-            pin = input("Pin: ")
+while True:
+    if userType == "Admin":
+        print("\n=======Hello Admin. Please enter your Username and Pin.=======")
+        #stores the inputted user name
+        adminUserName = input("UserName: ")
+        #checks if the input is in the database
+        if adminUserName in userNameList:
+            #stores the correct username
+            correctUN = adminUserName
+            #stores the user name index for later comparison with pin and admin index.
+            UNindex = userNameList.index(correctUN)
+            #stores if the user at the specified index is a customer or admin
+            userRole_at_index = (userRoleList[UNindex])
+            #checks if the user is an Admin
+            if userRole_at_index == "Admin":
+                pin = input("Pin: ")
+                #checks if pin in pinlist
+                if pin in pinList:
+                    # stores the correct pin
+                    correctPin = pin
+                    # stores the pin index
+                    pinIndex = pinList.index(correctPin)
+                    print("The Pin Index is: ", pinIndex)
+                    # if the pin index is in the same index as the UN, then they entered the correct pin for their corressponding userName.
+                    if pinIndex == UNindex:
+                        print("\n=======You have succesfully entered the Admin Page.")
+                        break
+                    else:
+                            print("\nSorry the pin you have entered is incorrect. Try Again.")
+            #If user is not an admin
+            else:
+                print("Sorry. You are not authorized to enter the Admin page.")
+
+
+        #Need to add code that has them enter the pin again.
+        #Add Code: Tells user that they must contact their admin to create an account.
+        else:
+            print("\nSorry. Your User Name is not in the database. ")
+
+
+
+    elif userType == "Customer":
+        print("\n=======Hello Customer. Please enter your Username and Pin.=======")
+        customUserName = input("UserName: ")
+        if customUserName in userNameList:
+            #stores the correct username
+            correctUN = customUserName
+            #stores the user name index for later comparison with pin.
+            UNindex = userNameList.index(correctUN)
+            print("The UN Index is: ", UNindex)
+            # stores if the user at the specified index is a customer or admin
+            userRole_at_index = (userRoleList[UNindex])
             #checks if pin in pinlist
-            if pin in pinList:
-                # stores the correct pin
-                correctPin = pin
-                # stores the pin index
-                pinIndex = pinList.index(correctPin)
-                print("The Pin Index is: ", pinIndex)
-                # if the pin index is in the same index as the UN, then they entered the correct pin for their corressponding userName.
-                if pinIndex == UNindex:
-                    print("\n=======You have succesfully entered the Admin Page.")
-                else:
+            if userRole_at_index == "Customer":
+                pin = input("Pin: ")
+                #checks if pin in pinlist
+                if pin in pinList:
+                    # stores the correct pin
+                    correctPin = pin
+                    # stores the pin index
+                    pinIndex = pinList.index(correctPin)
+                    print("The Pin Index is: ", pinIndex)
+                    # if the pin index is in the same index as the UN, then they entered the correct pin for their corressponding userName.
+                    if pinIndex == UNindex:
+                        print("\n=======You have succesfully entered the Customer Page.")
+                        print("Your options are \n- 1: Check Balance \n- 2: Withdraw from balance \n- 3: Deposit into balance")
+                        userInput = input("\nPlease enter what action you wish to take by inputting 1, 2, or 3: ")
+                        print(userInput)
+                        break
+                    else:
                         print("\nSorry the pin you have entered is incorrect. Try Again.")
-        #If user is not an admin
-        else:
-            print("Sorry. You are not authorized to enter the Admin page.")
+            #If user is not an admin
+            else:
+                print("Sorry. You are not authorized to enter the Customer page. Contact your Admin to create an account.")
 
+#lets user check balance
+def checkBalance():
+    userBalance = (balanceList[UNindex])
+    if userInput == "1":
+        print("Your check balance is: ", userBalance)
+checkBalance()
 
-    #Need to add code that has them enter the pin again.
-    #Add Code: Tells user that they must contact their admin to create an account.
-    else:
-        print("\nSorry. Your User Name is not in the database. ")
+#lets user withdraw from balance
+def withdraw():
+    userBalance = (balanceList[UNindex])
+    userBalanceNum = int(userBalance)
+    print(userBalanceNum)
+    if userInput == "2":
+        withdraw_amt = int(input("How much would you like to withdraw from your balance: "))
+        newUserBalance = userBalanceNum - withdraw_amt
+        print("Your previous balance was: ",userBalance, ". Your new balance is: ", newUserBalance)
+withdraw()
 
-
-elif userType == "Customer":
-    print("\n=======Hello Customer. Please enter your Username and Pin.=======")
-    customUserName = input("UserName: ")
-    if customUserName in userNameList:
-        #stores the correct username
-        correctUN = customUserName
-        #stores the user name index for later comparison with pin.
-        UNindex = userNameList.index(correctUN)
-        print("The UN Index is: ", UNindex)
-        # stores if the user at the specified index is a customer or admin
-        userRole_at_index = (userRoleList[UNindex])
-        #checks if pin in pinlist
-        if userRole_at_index == "Customer":
-            pin = input("Pin: ")
-            #checks if pin in pinlist
-            if pin in pinList:
-                # stores the correct pin
-                correctPin = pin
-                # stores the pin index
-                pinIndex = pinList.index(correctPin)
-                print("The Pin Index is: ", pinIndex)
-                # if the pin index is in the same index as the UN, then they entered the correct pin for their corressponding userName.
-                if pinIndex == UNindex:
-                    print("\n=======You have succesfully entered the Customer Page.")
-                else:
-                    print("\nSorry the pin you have entered is incorrect. Try Again.")
-        #If user is not an admin
-        else:
-            print("Sorry. You are not authorized to enter the Customer page. Contact your Admin to create an account.")
+#lets user deposit from balance
+def deposit():
+    userBalance = (balanceList[UNindex])
+    userBalanceNum = int(userBalance)
+    if userInput == "3":
+        depositAmt = int(input("How much would you to deposit into your account: "))
+        newUserBalance = userBalanceNum + depositAmt
+        print("Your previous balance was: ",userBalance, ". Your new balance is: ", newUserBalance)
+deposit()
 
 
