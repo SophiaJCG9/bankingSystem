@@ -1,3 +1,12 @@
+"""
+#library to make changes to database
+import pyodbc
+conn = pyodbc.connect('Driver={SQL Server};'
+                      'Server=server_name;'
+                      'Database=banking_s;'
+                      'Trusted_Connection=yes;')
+
+"""
 #code to connect mySQL and Python
 import mysql.connector
 
@@ -8,6 +17,8 @@ mydb = mysql.connector.connect(
     port='3306',
     database='banking_system_db'
 )
+
+
 
 #allows me to view my database while coding
 myCursor = mydb.cursor()
@@ -123,32 +134,43 @@ while True:
             else:
                 print("Sorry. You are not authorized to enter the Customer page. Contact your Admin to create an account.")
 
-#lets user check balance
-def checkBalance():
-    userBalance = (balanceList[UNindex])
-    if userInput == "1":
-        print("Your check balance is: ", userBalance)
-checkBalance()
+#lets user check
+while True:
+    def checkBalance():
+        userBalance = (balanceList[UNindex])
+        if userInput == "1":
+            print("Your check balance is: ", userBalance)
+    checkBalance()
 
-#lets user withdraw from balance
-def withdraw():
-    userBalance = (balanceList[UNindex])
-    userBalanceNum = int(userBalance)
-    print(userBalanceNum)
-    if userInput == "2":
-        withdraw_amt = int(input("How much would you like to withdraw from your balance: "))
-        newUserBalance = userBalanceNum - withdraw_amt
-        print("Your previous balance was: ",userBalance, ". Your new balance is: ", newUserBalance)
-withdraw()
+    #lets user withdraw from balance
+    def withdraw():
+        userBalance = (balanceList[UNindex])
+        userBalanceNum = int(userBalance)
+        print(userBalanceNum)
+        if userInput == "2":
+            print("Your check balance is: ", userBalance)
+            withdraw_amt = int(input("\nHow much would you like to withdraw from your balance: "))
+            newUserBalance = userBalanceNum - withdraw_amt
+            print("Your previous balance was: ",userBalance, ". Your new balance is: ", newUserBalance)
+    withdraw()
 
-#lets user deposit from balance
-def deposit():
-    userBalance = (balanceList[UNindex])
-    userBalanceNum = int(userBalance)
-    if userInput == "3":
-        depositAmt = int(input("How much would you to deposit into your account: "))
-        newUserBalance = userBalanceNum + depositAmt
-        print("Your previous balance was: ",userBalance, ". Your new balance is: ", newUserBalance)
-deposit()
+    #lets user deposit from balance
+    def deposit():
+        userBalance = (balanceList[UNindex])
+        userBalanceNum = int(userBalance)
+        if userInput == "3":
+            print("Your check balance is: ", userBalance)
+            depositAmt = int(input("\nHow much would you to deposit into your account: "))
+            newUserBalance = userBalanceNum + depositAmt
+            print("Your previous balance was: ",userBalance, ". Your new balance is: ", newUserBalance)
+    deposit()
+    userContinue = input("\nWould you like to make other changes? Please input 1 for Yes or 2 for No: ")
+    if userContinue == "1":
+        print("Your options are \n- 1: Check Balance \n- 2: Withdraw from balance \n- 3: Deposit into balance")
+        userInput = input("\nPlease enter what action you wish to take by inputting 1, 2, or 3: ")
+        continue
+    print("======Thanks for using the banking system UI.======")
+    break
+
 
 
