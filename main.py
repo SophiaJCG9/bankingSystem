@@ -1,15 +1,11 @@
-"""
 #library to make changes to database
-import pyodbc
-conn = pyodbc.connect('Driver={SQL Server};'
-                      'Server=server_name;'
-                      'Database=banking_s;'
-                      'Trusted_Connection=yes;')
-
-"""
-#code to connect mySQL and Python
 import mysql.connector
 
+
+from mysql.connector import MySQLConnection, Error
+
+
+#code to connect mySQL and Python
 mydb = mysql.connector.connect(
     host='localhost',
     user='root',
@@ -85,6 +81,8 @@ while True:
                     # if the pin index is in the same index as the UN, then they entered the correct pin for their corressponding userName.
                     if pinIndex == UNindex:
                         print("\n=======You have succesfully entered the Admin Page.")
+                        print("Your options are \n- 1: Create Account \n- 2: Delete Account \n- 3: Modify Account")
+                        userInput = input("\nPlease enter what action you wish to take by inputting 1, 2, or 3: ")
                         break
                     else:
                             print("\nSorry the pin you have entered is incorrect. Try Again.")
@@ -134,13 +132,13 @@ while True:
             else:
                 print("Sorry. You are not authorized to enter the Customer page. Contact your Admin to create an account.")
 
-#lets user check
+#lets user perform tasks while they wish to continue
 while True:
+    #lets user view their balance
     def checkBalance():
         userBalance = (balanceList[UNindex])
         if userInput == "1":
             print("Your check balance is: ", userBalance)
-    checkBalance()
 
     #lets user withdraw from balance
     def withdraw():
@@ -152,7 +150,6 @@ while True:
             withdraw_amt = int(input("\nHow much would you like to withdraw from your balance: "))
             newUserBalance = userBalanceNum - withdraw_amt
             print("Your previous balance was: ",userBalance, ". Your new balance is: ", newUserBalance)
-    withdraw()
 
     #lets user deposit from balance
     def deposit():
@@ -163,14 +160,47 @@ while True:
             depositAmt = int(input("\nHow much would you to deposit into your account: "))
             newUserBalance = userBalanceNum + depositAmt
             print("Your previous balance was: ",userBalance, ". Your new balance is: ", newUserBalance)
-    deposit()
-    userContinue = input("\nWould you like to make other changes? Please input 1 for Yes or 2 for No: ")
-    if userContinue == "1":
-        print("Your options are \n- 1: Check Balance \n- 2: Withdraw from balance \n- 3: Deposit into balance")
-        userInput = input("\nPlease enter what action you wish to take by inputting 1, 2, or 3: ")
-        continue
-    print("======Thanks for using the banking system UI.======")
-    break
+    if userType == "Customer":
+        checkBalance()
+        withdraw()
+        deposit()
+
+        userContinue = input("\nWould you like to make other changes? Please input 1 for Yes or 2 for No: ")
+        if userContinue == "1":
+            print("Your options are \n- 1: Check Balance \n- 2: Withdraw from balance \n- 3: Deposit into balance")
+            userInput = input("\nPlease enter what action you wish to take by inputting 1, 2, or 3: ")
+            continue
+        print("======Thanks for using the banking system UI.======")
+        break
+    #The Admin Functions
+    def createAcc():
+        if userInput == "1":
+            role = input("Is this new account for an admin or customer? Please input 1 for admin or 2 for customer: ")
+            if role == "1":
+                newUserRole = ("Admin")
+                userRoleList.append(newUserRole)
+                print(userRoleList)
+            else:
+                newUserRole = ("Customer")
+                userRoleList.append(newUserRole)
+                print(userRoleList)
+            newUserName = input("Enter the user name of the account you wish to add: ")
+            userNameList.append(newUserName)
+            print(userNameList)
+            newUserPin = input("Enter the pin for the new user name: ")
+            pinList.append(newUserPin)
+            print(pinList)
+    if userType == "Admin":
+        createAcc()
+        userContinue = input("\nWould you like to make other changes? Please input 1 for Yes or 2 for No: ")
+        if userContinue == "1":
+            print("Your options are \n- 1: Check Balance \n- 2: Withdraw from balance \n- 3: Deposit into balance")
+            userInput = input("\nPlease enter what action you wish to take by inputting 1, 2, or 3: ")
+            continue
+        print("======Thanks for using the banking system UI.======")
+        break
+
+
 
 
 
