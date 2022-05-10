@@ -243,10 +243,32 @@ while True:
             mydb.commit()
             print("Your new user was succesfully created and added to the database.")
     def deleteAcc():
+        if userInput == "2":
+            deleteUserName = input("Please enter the user name of the account you wish to delete: ")
+            deletePin = input("Please enter the corresponding Pin number for the userName: ")
+            userConfirmation = input("Are you sure you wish to delete the user with this username. Please enter 1 for YES or 2 for NO.")
+            if userConfirmation == "1":
+                deleted_values = (deleteUserName, deletePin)
+                delUser = ("DELETE FROM bs_database WHERE userName = (%s) and userPin = (%s)")
+                myCursor.execute(delUser, deleted_values)
+                mydb.commit()
+                print("The account was succesfully deleted.")
+            else:
+                print("Understood. Will not delete account.")
+    def modifyAcc():
         pass
+        """
+        update = userInput("Would you like to update information for a customer or admin. Please enter 1 for customer or 2 for admin: ")
+        if update == "1":
+            userName = userInput("Please enter the username of the acount you wish to modify: ")
+
+            modifyPIN =
+            update = ("Update bs_database set balance = %s where userPIN = %s")
+        """
 
     if userType == "Admin":
         createAcc()
+        deleteAcc()
         userContinue = input("\nWould you like to make other changes? Please input 1 for Yes or 2 for No: ")
         if userContinue == "1":
             print("Your options are \n- 1: Create Account \n- 2: Delete Account \n- 3: Modify Account")
