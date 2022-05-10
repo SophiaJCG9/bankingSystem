@@ -211,23 +211,17 @@ while True:
                 newUserRole = ("Admin")
                 userRoleList.append(newUserRole)
                 print(userRoleList)
+                #if the user is an admin then they should not have a balance
+                newBalanceVal = None
             else:
                 newUserRole = ("Customer")
                 userRoleList.append(newUserRole)
                 print(userRoleList)
-                #stores the balance for this customer
+                # stores the balance for this customer
                 newCustBal = input("Please enter the balance for this user: ")
                 balanceList.append(newCustBal)
                 print(balanceList)
-                """
-                #BUG HERE
-                #insert new user balance into database
                 newBalanceVal = (newCustBal)
-                insertBal = "INSERT INTO bs_database (balance) VALUES (%s)"
-                myCursor.execute(insertBal, newBalanceVal)
-                mydb.commit()
-                print("Inserted", myCursor.rowcount, "row(s) of data.")
-                """
 
             # the new userID is stored in the list
             newUserID = int(input("Enter a one digit ID Number: "))
@@ -243,11 +237,13 @@ while True:
             print(pinList)
 
             #insert new admin or customer into my database with all new values
-            newUser = "INSERT INTO bs_database (userID, userType, userName,userPin) VALUES (%s, %s, %s, %s)"
-            newVals = (newUserID, newUserRole, newUserName, newUserPin)
+            newUser = "INSERT INTO bs_database (userID, userType, userName, userPin, balance) VALUES (%s, %s, %s, %s, %s)"
+            newVals = (newUserID, newUserRole, newUserName, newUserPin, newBalanceVal)
             myCursor.execute(newUser, newVals)
             mydb.commit()
-            print("Your new user was succesfully created and added to the database. This is the new user as appears in the table: ", myCursor.execute('select * from bs_database'))
+            print("Your new user was succesfully created and added to the database.")
+    def deleteAcc():
+        pass
 
     if userType == "Admin":
         createAcc()
