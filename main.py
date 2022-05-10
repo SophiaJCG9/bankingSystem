@@ -13,11 +13,9 @@ mydb = mysql.connector.connect(
     port='3306',
     database='banking_system_db'
 )
-
-
+myCursor = mydb.cursor()
 
 #allows me to view my database while coding
-myCursor = mydb.cursor()
 myCursor.execute('select * from bs_database')
 dataBase = myCursor.fetchall()
 for x in dataBase:
@@ -48,6 +46,12 @@ databasePin = myCursor.fetchall()
 #This makes my pins accessible.
 pinList = [pin[0] for pin in databasePin]
 
+#access pins in database
+myCursor.execute("SELECT userID FROM bs_database")
+databaseID = myCursor.fetchall()
+#This makes my pins accessible.
+userIDList = [ID[0] for ID in databaseID]
+print(userIDList)
 
 
 #This is my Welcome Page.
@@ -149,7 +153,19 @@ while True:
             print("Your check balance is: ", userBalance)
             withdraw_amt = int(input("\nHow much would you like to withdraw from your balance: "))
             newUserBalance = userBalanceNum - withdraw_amt
-            print("Your previous balance was: ",userBalance, ". Your new balance is: ", newUserBalance)
+
+            # Alter in the database
+            query = ("Update bs_database set balance = %s where userPIN = %s")
+            # pass in the new balance and the users ID
+            tuple1 = (newUserBalance, correctPin)
+            myCursor.execute(query, tuple1)
+            mydb.commit()
+            print("Your previous balance was: ", userBalance, ". Your new balance is: ", newUserBalance)
+
+            # update value in balance list
+            balanceList[UNindex] = newUserBalance
+
+
 
     #lets user deposit from balance
     def deposit():
@@ -160,6 +176,20 @@ while True:
             depositAmt = int(input("\nHow much would you to deposit into your account: "))
             newUserBalance = userBalanceNum + depositAmt
             print("Your previous balance was: ",userBalance, ". Your new balance is: ", newUserBalance)
+
+            # Alter in the database
+            query = ("Update bs_database set balance = %s where userPIN = %s")
+            # pass in the new balance and the users ID
+            tuple1 = (newUserBalance, correctPin)
+            myCursor.execute(query, tuple1)
+            mydb.commit()
+            print("Your previous balance was: ", userBalance, ". Your new balance is: ", newUserBalance)
+
+            # update value in balance list
+            balanceList[UNindex] = newUserBalance
+
+
+
     if userType == "Customer":
         checkBalance()
         withdraw()
@@ -175,7 +205,8 @@ while True:
     #The Admin Functions
     def createAcc():
         if userInput == "1":
-            role = input("Is this new account for an admin or customer? Please input 1 for admin or 2 for customer: ")
+            role = input("Is this new account for an admin or customer? Please input \n - 1: Admin or \n - 2: Customer: \nInput 1 or 2: ")
+            #appends cutomer or admin depending on the role the user inputted
             if role == "1":
                 newUserRole = ("Admin")
                 userRoleList.append(newUserRole)
@@ -184,17 +215,45 @@ while True:
                 newUserRole = ("Customer")
                 userRoleList.append(newUserRole)
                 print(userRoleList)
+                #stores the balance for this customer
+                newCustBal = input("Please enter the balance for this user: ")
+                balanceList.append(newCustBal)
+                print(balanceList)
+                """
+                #BUG HERE
+                #insert new user balance into database
+                newBalanceVal = (newCustBal)
+                insertBal = "INSERT INTO bs_database (balance) VALUES (%s)"
+                myCursor.execute(insertBal, newBalanceVal)
+                mydb.commit()
+                print("Inserted", myCursor.rowcount, "row(s) of data.")
+                """
+
+            # the new userID is stored in the list
+            newUserID = int(input("Enter a one digit ID Number: "))
+            userIDList.append(newUserID)
+            print(userIDList)
+            #the new username is stored in the list
             newUserName = input("Enter the user name of the account you wish to add: ")
             userNameList.append(newUserName)
             print(userNameList)
-            newUserPin = input("Enter the pin for the new user name: ")
+            #the new userPIN is stored in the list
+            newUserPin = input("Enter a four digit pin for the new user name: ")
             pinList.append(newUserPin)
             print(pinList)
+
+            #insert new admin or customer into my database with all new values
+            newUser = "INSERT INTO bs_database (userID, userType, userName,userPin) VALUES (%s, %s, %s, %s)"
+            newVals = (newUserID, newUserRole, newUserName, newUserPin)
+            myCursor.execute(newUser, newVals)
+            mydb.commit()
+            print("Your new user was succesfully created and added to the database. This is the new user as appears in the table: ", myCursor.execute('select * from bs_database'))
+
     if userType == "Admin":
         createAcc()
         userContinue = input("\nWould you like to make other changes? Please input 1 for Yes or 2 for No: ")
         if userContinue == "1":
-            print("Your options are \n- 1: Check Balance \n- 2: Withdraw from balance \n- 3: Deposit into balance")
+            print("Your options are \n- 1: Create Account \n- 2: Delete Account \n- 3: Modify Account")
             userInput = input("\nPlease enter what action you wish to take by inputting 1, 2, or 3: ")
             continue
         print("======Thanks for using the banking system UI.======")
