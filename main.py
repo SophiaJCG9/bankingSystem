@@ -258,6 +258,7 @@ while True:
     def modifyAcc():
         pass
         """
+        need to update
         update = userInput("Would you like to update information for a customer or admin. Please enter 1 for customer or 2 for admin: ")
         if update == "1":
             userName = userInput("Please enter the username of the acount you wish to modify: ")
