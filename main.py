@@ -256,19 +256,35 @@ while True:
             else:
                 print("Understood. Will not delete account.")
     def modifyAcc():
-        pass
-        """
-        update = userInput("Would you like to update information for a customer or admin. Please enter 1 for customer or 2 for admin: ")
-        if update == "1":
-            userName = userInput("Please enter the username of the acount you wish to modify: ")
+        print("You will have the oppurtunity to change the username or password. If you do not wish to change the userName or password simply type 2. This will make no changes.")
+        userID = input("\nPlease enter the userID of the account you wish to modify: ")
+        change = input("\nDo you wish to change the userName? Please enter 1 for yes and 2 for no:  ")
+        if change == "1":
+            changeUN = input("\nPlease enter the new user name: ")
+            updateUN = ("Update bs_database set userName = %s where userID = %s")
+            # pass in the new userName
+            newUN = (changeUN, userID)
+            myCursor.execute(updateUN, newUN)
+            mydb.commit()
+        else:
+            print("Ok. The user name will not be changed.")
+        nextChange = input("\nDo you wish to change the password for the corresponding userName. Please enter 1 for yes and 2 for no: ")
+        if nextChange == "1":
+            changePW = input("\nPlease enter the new password: ")
+            updatePW = ("Update bs_database set userPin = %s where userID = %s")
+            # pass in the new password
+            newPW = (changePW, userID)
+            myCursor.execute(updatePW, newPW)
+            mydb.commit()
+        else:
+            print("\nOk. The user name will not be changed.")
+            print("\nYou have now succesfully modified an account.")
 
-            modifyPIN =
-            update = ("Update bs_database set balance = %s where userPIN = %s")
-        """
 
     if userType == "Admin":
         createAcc()
         deleteAcc()
+        modifyAcc()
         userContinue = input("\nWould you like to make other changes? Please input 1 for Yes or 2 for No: ")
         if userContinue == "1":
             print("Your options are \n- 1: Create Account \n- 2: Delete Account \n- 3: Modify Account")
